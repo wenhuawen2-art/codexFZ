@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    @apply h-full;
+    background: transparent;
+  }
+
+  body {
+    @apply font-mono text-hud-text antialiased;
+  }
+}
+
+@layer components {
+  .hud-panel {
+    @apply relative;
+  }
+
+  .hud-panel-title {
+    @apply mb-2 text-2xs font-bold uppercase tracking-widest text-hud-text;
+  }
+
+  .hud-sub-card {
+    @apply relative bg-hud-list p-2 pt-1.5 pl-1.5;
+  }
+
+  .hud-sub-card::before {
+    content: '';
+    @apply pointer-events-none absolute h-1 w-1 bg-hud-viewport;
+    left: 3px;
+    top: 3px;
+  }
+
+  .hud-bar-track {
+    @apply h-1 w-full bg-hud-progress-track;
+  }
+
+  .hud-bar-fill {
+    @apply h-full bg-hud-progress;
+  }
+
+  .hud-check-row {
+    @apply flex items-center justify-between border-b border-hud-border/20 py-1 text-2xs;
+  }
+
+  .hud-indicator-on {
+    @apply h-1.5 w-1.5 bg-hud-active;
+  }
+
+  .hud-indicator-off {
+    @apply h-1.5 w-1.5 border border-hud-tag bg-transparent;
+  }
+}
