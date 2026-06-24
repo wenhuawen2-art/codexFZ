@@ -33,7 +33,7 @@ export default {
         mono: ['Consolas', '"Courier New"', 'monospace'],
       },
       fontSize: {
-        '2xs': ['0.625rem', { lineHeight: '0.875rem' }],
+        '2xs': ['0.75rem', { lineHeight: '0.875rem' }],
       },
     },
   },

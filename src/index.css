@@ -4,9 +4,15 @@
 
 @layer base {
   html,
-  body,
+  body {
+    @apply h-full w-full;
+    /* letterbox 区域：autofit 缩放后视口留白；勿设为不透明，否则会挡住 UE 合成 */
+    background: transparent;
+  }
+
   #root {
-    @apply h-full;
+    @apply relative;
+    /* UE 嵌入时中间视口需透明透出场景，必须保持 transparent */
     background: transparent;
   }
 
@@ -21,18 +27,121 @@
   }
 
   .hud-panel-title {
-    @apply mb-2 text-2xs font-bold uppercase tracking-widest text-hud-text;
+    @apply mb-1 text-2xs font-bold uppercase tracking-widest text-hud-text;
+  }
+
+  .hud-device-title {
+    @apply mb-1 text-2xs font-bold uppercase tracking-widest text-hud-text;
+  }
+
+  /** 右侧栏一级间距：设备控制 / 数据接入等 HudPanel 之间 */
+  .hud-rail-stack-l1 {
+    @apply flex flex-col gap-2.5;
+  }
+
+  /** 右侧栏二级间距：设备控制内的设备 / 设备组之间 */
+  .hud-rail-stack-l2 {
+    @apply flex flex-col gap-2;
+  }
+
+  /** 右侧栏专用：更紧凑间距，避免上半区出现滚动条 */
+  .hud-rail-stack-right.hud-rail-stack-l1 {
+    @apply gap-2;
+  }
+
+  .hud-rail-stack-right.hud-rail-stack-l2 {
+    @apply gap-1.5;
+  }
+
+  /** 滚动区与底部固定卫星云图之间的间距（与一级间距一致） */
+  .hud-rail-cloud-gap {
+    @apply mt-2.5 shrink-0;
+  }
+
+  .hud-input {
+    @apply border border-hud-border bg-hud-card text-hud-text;
+    color-scheme: dark;
+  }
+
+  .hud-input::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.9;
+  }
+
+  .hud-btn {
+    @apply h-4 border border-hud-border/40 px-1.5 text-2xs uppercase tracking-wider text-hud-text transition-colors hover:border-hud-viewport;
+  }
+
+  .hud-thumbnail {
+    @apply border border-hud-grid-major/80 bg-hud-bg/60;
+  }
+
+  /** UE 视口左侧数据面板：半透明毛玻璃 */
+  .hud-glass-panel {
+    @apply border border-hud-viewport/25 bg-hud-card/45 backdrop-blur-md;
+  }
+
+  /** UE 视口 UI 层：深色底 + 虚线网格（遮挡 UE，随 UI 隐藏） */
+  .hud-ue-grid-bg {
+    background-color: rgb(8 37 55 / 0.92);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M 40 0 L 0 0 0 40' fill='none' stroke='%23326479' stroke-width='1' stroke-dasharray='3 5'/%3E%3C/svg%3E");
+    background-size: 40px 40px;
+  }
+
+  .hud-modal-backdrop {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/70;
+  }
+
+  .hud-modal {
+    @apply w-64 border border-hud-viewport bg-hud-card p-3;
+  }
+
+  .hud-modal-expanded {
+    @apply flex h-[min(720px,88vh)] w-[min(920px,92vw)] flex-col overflow-hidden border border-hud-viewport bg-hud-card p-4;
+  }
+
+  /** 历史曲线图表弹框：UE 左下角，无全局遮罩 */
+  .hud-history-chart-panel {
+    @apply flex h-[min(560px,calc(100%-16px))] w-[min(920px,calc(100%-16px))] flex-col overflow-hidden border border-hud-viewport bg-hud-card/90 p-4 backdrop-blur-md;
+  }
+
+  .hud-section {
+    @apply border-b border-hud-border/10;
+  }
+
+  .hud-pill {
+    @apply h-[22px] min-w-[28px] border border-hud-border/30 px-1 text-2xs leading-none;
+  }
+
+  .hud-pill-active {
+    @apply border-hud-active bg-hud-active/20 text-hud-active;
+  }
+
+  .hud-pill-selected {
+    @apply border-hud-border text-hud-accent;
   }
 
   .hud-sub-card {
-    @apply relative bg-hud-list p-2 pt-1.5 pl-1.5;
+    @apply relative border border-hud-border bg-hud-card py-1 pr-1.5 pl-3;
   }
 
   .hud-sub-card::before {
     content: '';
-    @apply pointer-events-none absolute h-1 w-1 bg-hud-viewport;
-    left: 3px;
-    top: 3px;
+    @apply pointer-events-none absolute h-1 w-1 bg-hud-text;
+    left: 4px;
+    top: 4px;
+  }
+
+  .hud-sub-card-active::before {
+    @apply bg-hud-highlight;
+  }
+
+  .hud-sub-card-warn::before {
+    @apply bg-hud-accent;
+  }
+
+  .hud-sub-card-alert::before {
+    @apply bg-hud-alert;
   }
 
   .hud-bar-track {

@@ -9,16 +9,16 @@ interface StatusTileProps {
 
 const statusColors = {
   normal: 'text-hud-text',
-  active: 'text-hud-active',
+  active: 'text-hud-highlight',
   warn: 'text-hud-accent',
   alert: 'text-hud-alert',
 }
 
 function StatusTile({ label, value, status = 'normal' }: StatusTileProps) {
   return (
-    <HudSubCard>
-      <p className="text-2xs uppercase tracking-wider text-hud-muted">{label}</p>
-      <p className={clsx('mt-0.5 text-xs font-bold uppercase', statusColors[status])}>
+    <HudSubCard status={status}>
+      <p className="text-2xs uppercase leading-tight tracking-wider text-hud-muted">{label}</p>
+      <p className={clsx('mt-px text-2xs font-bold leading-tight uppercase', statusColors[status])}>
         {value}
       </p>
     </HudSubCard>

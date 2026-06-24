@@ -1,70 +1,140 @@
-import dayjs from 'dayjs'
-import BarGauge from './hud/BarGauge'
+import { useState } from 'react'
 import HudPanel from './hud/HudPanel'
 import StatusTile from './hud/StatusTile'
-import RadarChart from './RadarChart'
-import type { DeviceStatus } from './StatusPanel'
-import type { IntensityPoint } from './RadarChart'
+import HudValueCard from './hud/HudValueCard'
+import ParamEditDialog from './controls/ParamEditDialog'
+import HistoryCurvePanel from './HistoryCurvePanel'
+import { SKYLIGHT_LABELS } from '../constants/labels'
+import type { HistoryPoint, RealtimeData } from '../types/dashboard'
 
 interface LeftDashboardProps {
-  status: DeviceStatus
-  chartData: IntensityPoint[]
+  realtime: RealtimeData
+  onParamChange: (
+    key: 'samplingTime' | 'heightResolutionKm',
+    value: string | number,
+  ) => void
+  onQuery: (query: {
+    start: string
+    end: string
+    params: string[]
+  }) => Promise<HistoryPoint[]>
 }
 
-function LeftDashboard({ status, chartData }: LeftDashboardProps) {
-  const powerPct = Math.round((status.scanRate / 25) * 100)
+type EditField = 'samplingTime' | 'heightResolutionKm' | null
+
+function LeftDashboard({
+  realtime,
+  onParamChange,
+  onQuery,
+}: LeftDashboardProps) {
+  const { weather, params } = realtime
+  const [editField, setEditField] = useState<EditField>(null)
+
+  const skylightStatus =
+    params.skylightStatus === 'open'
+      ? 'active'
+      : params.skylightStatus === 'fault'
+        ? 'alert'
+        : 'warn'
+
+  const handleConfirmEdit = (value: string) => {
+    if (editField === 'samplingTime') {
+      onParamChange('samplingTime', value)
+    } else if (editField === 'heightResolutionKm') {
+      onParamChange('heightResolutionKm', parseFloat(value) || 0)
+    }
+    setEditField(null)
+  }
 
   return (
-    <aside className="flex w-[226px] shrink-0 flex-col gap-3 overflow-y-auto bg-hud-bg p-3">
-      <HudPanel title="LASER RADAR // SYSTEM">
-        <p className="text-2xs leading-relaxed text-hud-muted">
-          {status.connected ? 'DATA CONNECTING...' : 'SIGNAL LOST'}
-        </p>
-        <p className="mt-1 text-xs text-hud-active">{status.deviceName}</p>
+    <>
+      <HudPanel title="天气 / 环境">
+        {weather.error ? (
+          <p className="text-2xs text-hud-alert">天气数据获取失败</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-1.5">
+            <StatusTile
+              label="温度"
+              value={`${weather.temperature}℃`}
+              status="active"
+            />
+            <StatusTile label="湿度" value={`${weather.humidity}%`} />
+            <StatusTile label="气压" value={`${weather.pressure}hPa`} />
+            <StatusTile label="风向" value={weather.windDirection} />
+            <StatusTile label="风速" value={`${weather.windSpeed}m/s`} />
+            <StatusTile label="风力" value={`${weather.windLevel}级`} />
+            <StatusTile label="云量" value={`${weather.cloudCover}%`} />
+          </div>
+        )}
       </HudPanel>
 
-      <HudPanel title="STATUS GRID">
+      <HudPanel title="系统参数">
         <div className="grid grid-cols-2 gap-1.5">
+          <HudValueCard
+            className="col-span-2"
+            label="采样时间"
+            value={params.samplingTime}
+            editable
+            onEdit={() => setEditField('samplingTime')}
+          />
           <StatusTile
-            label="Scan Rate"
-            value={`${status.scanRate} HZ`}
+            label="PRF"
+            value={`${params.prfHz} Hz`}
             status="active"
           />
-          <StatusTile label="Point Cloud" value="NORMAL" status="normal" />
+          <StatusTile label="波长" value={`${params.wavelengthNm} nm`} />
+          <StatusTile label="原始计数" value={String(params.rawAccumulation)} />
+          <HudValueCard
+            label="高度分辨率"
+            value={`${params.heightResolutionKm} km`}
+            editable
+            onEdit={() => setEditField('heightResolutionKm')}
+          />
+          <StatusTile label="激光室温" value={`${params.laserRoomTemp}℃`} />
+          <StatusTile label="激光室湿" value={`${params.laserRoomHumidity}%`} />
           <StatusTile
-            label="Connection"
-            value={status.connected ? 'ACTIVE' : 'OFFLINE'}
-            status={status.connected ? 'active' : 'alert'}
+            label="望远镜室温"
+            value={`${params.telescopeRoomTemp}℃`}
           />
           <StatusTile
-            label="Firmware"
-            value={status.firmwareVersion.toUpperCase()}
-            status="normal"
+            label="望远镜室湿"
+            value={`${params.telescopeRoomHumidity}%`}
+          />
+          <StatusTile
+            label="累计时间"
+            value={`${params.accumulatedTimeSec}s`}
+          />
+          <StatusTile
+            label="天窗"
+            value={SKYLIGHT_LABELS[params.skylightStatus]}
+            status={skylightStatus}
           />
         </div>
       </HudPanel>
 
-      <HudPanel title="MODULE STATUS">
-        <div className="space-y-3">
-          <BarGauge label="Main Sensor" value={powerPct} unit="%" active />
-          <BarGauge label="Scan Power" value={status.scanRate} max={25} unit="Hz" />
-          <BarGauge
-            label="Point Density"
-            value={Math.round(status.pointCount / 2000)}
-            max={80}
-            unit="K"
-          />
-        </div>
-      </HudPanel>
+      <HistoryCurvePanel className="shrink-0" onQuery={onQuery} />
 
-      <HudPanel title="INTENSITY TREND" className="flex-1">
-        <RadarChart data={chartData} compact />
-      </HudPanel>
-
-      <p className="text-2xs text-hud-tag">
-        SYNC {dayjs(status.lastUpdate).format('HH:mm:ss')}
-      </p>
-    </aside>
+      <ParamEditDialog
+        open={editField === 'samplingTime'}
+        title="编辑采样时间"
+        label="采样时间"
+        value={params.samplingTime}
+        inputType="text"
+        onConfirm={handleConfirmEdit}
+        onCancel={() => setEditField(null)}
+      />
+      <ParamEditDialog
+        open={editField === 'heightResolutionKm'}
+        title="编辑高度分辨率"
+        label="高度分辨率"
+        value={String(params.heightResolutionKm)}
+        inputType="number"
+        step="0.1"
+        unit="km"
+        onConfirm={handleConfirmEdit}
+        onCancel={() => setEditField(null)}
+      />
+    </>
   )
 }
 

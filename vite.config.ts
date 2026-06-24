@@ -7,6 +7,7 @@ import react from '@vitejs/plugin-react'
 function fileProtocolHtml(): Plugin {
   return {
     name: 'file-protocol-html',
+    apply: 'build',
     enforce: 'post',
     transformIndexHtml(html) {
       const withoutModule = html

@@ -11,6 +11,9 @@ importers:
       ahooks:
         specifier: ^3.8.4
         version: 3.9.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      autofit.js:
+        specifier: ^3.2.8
+        version: 3.2.8
       axios:
         specifier: ^1.9.0
         version: 1.18.0
@@ -1162,6 +1165,9 @@ packages:
 
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
+
+  autofit.js@3.2.8:
+    resolution: {integrity: sha512-albZNwDIXvcRneEDyZLW3uAIOH0cUQG/TnCGQ7jpfnL0gPn/+1ZNVRuEz3ZuzZvVkQ4HQRplGHjUeMRtPNxjLQ==}
 
   autoprefixer@10.5.0:
     resolution: {integrity: sha512-FMhOoZV4+qR6aTUALKX2rEqGG+oyATvwBt9IIzVR5rMa2HRWPkxf+P+PAJLD1I/H5/II+HuZcBJYEFBpq39ong==}
@@ -3446,6 +3452,8 @@ snapshots:
   argparse@2.0.1: {}
 
   asynckit@0.4.0: {}
+
+  autofit.js@3.2.8: {}
 
   autoprefixer@10.5.0(postcss@8.5.15):
     dependencies:

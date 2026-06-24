@@ -1,95 +1,170 @@
 import HudPanel from './hud/HudPanel'
-import HudSubCard from './hud/HudSubCard'
-import ChecklistRow from './hud/ChecklistRow'
-import type { DeviceStatus } from './StatusPanel'
-import type { IntensityPoint } from './RadarChart'
+import HudBadge from './hud/HudBadge'
+import ConnectionList from './hud/ConnectionList'
+import CloudTimeline from './viewport/CloudTimeline'
+import LaserControlGrid from './controls/LaserControlGrid'
+import ModeSelect from './controls/ModeSelect'
+import {
+  ACQUISITION_LABELS,
+  SEED_LASER_LABELS,
+  SNSPD_LABELS,
+  TELESCOPE_MODE_LABELS,
+  canControl,
+} from '../constants/labels'
+import type {
+  AcquisitionMode,
+  DeviceControls,
+  SeedLaserMode,
+  SnspdMode,
+  TelescopeMode,
+  TriState,
+  UserRole,
+  DataConnectionItem,
+} from '../types/dashboard'
 
 interface RightDashboardProps {
-  status: DeviceStatus
-  chartData: IntensityPoint[]
+  controls: DeviceControls
+  connections: DataConnectionItem[]
+  userRole: UserRole
+  onLaserChange: (id: number, field: 'amplifier' | 'oscillator' | 'qSwitch', value: TriState) => void
+  onSeedLaserChange: (v: SeedLaserMode) => void
+  onTelescopeChange: (id: number, mode: TelescopeMode) => void
+  onSnspdChange: (v: SnspdMode) => void
+  onTcspcChange: (v: TriState) => void
+  onAcquisitionChange: (v: AcquisitionMode) => void
 }
 
-const SYSTEM_ITEMS = [
-  'LIDAR CORE',
-  'MOTOR DRIVER',
-  'DATA BUS',
-  'POINT FILTER',
-  'SLAM ENGINE',
-  'MAP CACHE',
-  'UE BRIDGE',
-  'TELEMETRY',
-]
+const seedOptions = Object.entries(SEED_LASER_LABELS)
+  .filter(([v]) => v !== 'disconnected')
+  .map(([value, label]) => ({ value: value as SeedLaserMode, label }))
 
-function RightDashboard({ status, chartData }: RightDashboardProps) {
-  const latestIntensity = chartData.at(-1)?.intensity ?? 0
-  const avgDistance =
-    chartData.length > 0
-      ? Math.round(
-          chartData.reduce((sum, p) => sum + p.distance, 0) / chartData.length,
-        )
-      : 0
+const snspdOptions = Object.entries(SNSPD_LABELS)
+  .filter(([v]) => v !== 'disconnected')
+  .map(([value, label]) => ({ value: value as SnspdMode, label }))
+
+const acqOptions = Object.entries(ACQUISITION_LABELS).map(([value, label]) => ({
+  value: value as AcquisitionMode,
+  label,
+}))
+
+const telOptions = Object.entries(TELESCOPE_MODE_LABELS)
+  .filter(([v]) => v !== 'disconnected')
+  .map(([value, label]) => ({
+    value: value as TelescopeMode,
+    label: label.length > 4 ? label.slice(0, 4) : label,
+  }))
+
+function RightDashboard({
+  controls,
+  connections,
+  userRole,
+  onLaserChange,
+  onSeedLaserChange,
+  onTelescopeChange,
+  onSnspdChange,
+  onTcspcChange,
+  onAcquisitionChange,
+}: RightDashboardProps) {
+  const disabled = !canControl(userRole)
 
   return (
-    <aside className="flex w-[226px] shrink-0 flex-col gap-3 overflow-y-auto bg-hud-bg p-3">
-      <HudPanel title="SYSTEM CHECK">
-        <div className="space-y-0">
-          {SYSTEM_ITEMS.map((item, i) => (
-            <ChecklistRow
-              key={item}
-              label={item}
-              active={status.connected && i < 6}
-              value={i === 6 ? (status.connected ? 'ON' : 'OFF') : undefined}
-            />
-          ))}
-        </div>
-      </HudPanel>
+    <aside className="flex h-full w-[226px] shrink-0 flex-col overflow-hidden bg-hud-bg p-2">
+      <div className="hud-rail-stack-l1 hud-rail-stack-right flex min-h-0 flex-1 flex-col overflow-hidden">
+        <HudPanel title="设备控制" className="flex min-h-0 flex-[3] flex-col overflow-hidden">
+          <div className="hud-rail-stack-l2 hud-rail-stack-right min-h-0 flex-1 overflow-hidden">
+            <section>
+              <p className="hud-device-title">激光器</p>
+              <LaserControlGrid
+                lasers={controls.lasers}
+                disabled={disabled}
+                onChange={onLaserChange}
+              />
+            </section>
 
-      <HudPanel title="TELEMETRY">
-        <div className="space-y-1 text-2xs">
-          <div className="flex justify-between border-b border-hud-border/20 py-1">
-            <span className="text-hud-muted">INTENSITY</span>
-            <span className="text-hud-grid-cross">{latestIntensity}%</span>
-          </div>
-          <div className="flex justify-between border-b border-hud-border/20 py-1">
-            <span className="text-hud-muted">AVG DISTANCE</span>
-            <span className="text-hud-grid-cross">{avgDistance} M</span>
-          </div>
-          <div className="flex justify-between border-b border-hud-border/20 py-1">
-            <span className="text-hud-muted">POINT COUNT</span>
-            <span className="text-hud-highlight">
-              {status.pointCount.toLocaleString()}
-            </span>
-          </div>
-          <div className="flex justify-between py-1">
-            <span className="text-hud-muted">SCAN MODE</span>
-            <span className="text-hud-accent">360° CONT</span>
-          </div>
-        </div>
-      </HudPanel>
+            <section>
+              <p className="hud-device-title">种子激光</p>
+              <ModeSelect
+                options={seedOptions}
+                value={controls.seedLaser}
+                disabled={disabled}
+                compact
+                disconnectedValue="disconnected"
+                onChange={onSeedLaserChange}
+              />
+            </section>
 
-      <HudPanel title="SUB SYSTEM">
-        <div className="grid grid-cols-2 gap-1.5">
-          {['OPTICS', 'ENCODER', 'IMU', 'GPS'].map((name) => (
-            <HudSubCard key={name} className="text-center">
-              <p className="text-2xs text-hud-muted">{name}</p>
-              <p className="mt-0.5 text-2xs font-bold text-hud-active">OK</p>
-            </HudSubCard>
-          ))}
-        </div>
-      </HudPanel>
+            <section>
+              <p className="hud-device-title">望远镜</p>
+              <div className="hud-rail-stack-l2 hud-rail-stack-right">
+                {controls.telescopes.map((t) => (
+                  <div key={t.id}>
+                    <p className="hud-device-title">组{t.id}</p>
+                    <ModeSelect
+                      options={telOptions}
+                      value={t.mode}
+                      disabled={disabled}
+                      compact
+                      disconnectedValue="disconnected"
+                      onChange={(m) => onTelescopeChange(t.id, m)}
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
 
-      <HudPanel title="ALERT LOG" className="flex-1">
-        <div className="space-y-1 text-2xs">
-          <p className="text-hud-active">[OK] Lidar initialized</p>
-          <p className="text-hud-active">[OK] UE bridge ready</p>
-          <p className="text-hud-muted">[--] Waiting for scan data</p>
-          {!status.connected && (
-            <p className="rounded bg-hud-tag-alert/60 px-1 text-hud-alert">
-              [!] Connection timeout
-            </p>
-          )}
-        </div>
-      </HudPanel>
+            <section>
+              <p className="hud-device-title">SNSPD</p>
+              <ModeSelect
+                options={snspdOptions}
+                value={controls.snspd}
+                disabled={disabled}
+                compact
+                disconnectedValue="disconnected"
+                onChange={onSnspdChange}
+              />
+            </section>
+
+            <section>
+              <p className="hud-device-title">TCSPC</p>
+              {controls.tcspc === 'disconnected' ? (
+                <HudBadge label="无法连接" variant="offline" />
+              ) : (
+                <ModeSelect
+                  options={[
+                    { value: 'on' as TriState, label: '开' },
+                    { value: 'off' as TriState, label: '关' },
+                  ]}
+                  value={controls.tcspc}
+                  disabled={disabled}
+                  compact
+                  onChange={onTcspcChange}
+                />
+              )}
+            </section>
+
+            <section>
+              <p className="hud-device-title">数据采集</p>
+              <ModeSelect
+                options={acqOptions}
+                value={controls.acquisition}
+                disabled={disabled}
+                compact
+                onChange={onAcquisitionChange}
+              />
+            </section>
+          </div>
+        </HudPanel>
+
+        <HudPanel title="数据接入" className="flex min-h-0 flex-[2] flex-col overflow-hidden">
+          <div className="min-h-0 flex-1 overflow-hidden">
+            <ConnectionList connections={connections} />
+          </div>
+        </HudPanel>
+      </div>
+
+      <div className="hud-rail-cloud-gap">
+        <CloudTimeline />
+      </div>
     </aside>
   )
 }
