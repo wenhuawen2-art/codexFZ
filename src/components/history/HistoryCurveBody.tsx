@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import clsx from 'clsx'
+import { Loader2 } from 'lucide-react'
 import HudButton from '../hud/HudButton'
+import HudDateTimePicker from '../controls/HudDateTimePicker'
 import HistoryNumericChart from '../viewport/HistoryNumericChart'
 import HistorySkylightStrip from '../viewport/HistorySkylightStrip'
 import type { HistoryPoint } from '../../types/dashboard'
@@ -225,17 +227,17 @@ function HistoryCurveBody({
 
   return (
     <div className={clsx('flex flex-col space-y-1', className)}>
-      <input
-        type="datetime-local"
+      <HudDateTimePicker
         value={start}
-        onChange={(e) => onStartChange(e.target.value)}
-        className="hud-input h-5 w-full px-1 text-2xs text-hud-text"
+        onChange={onStartChange}
+        storageFormat="filter"
+        className="h-5 w-full"
       />
-      <input
-        type="datetime-local"
+      <HudDateTimePicker
         value={end}
-        onChange={(e) => onEndChange(e.target.value)}
-        className="hud-input h-5 w-full px-1 text-2xs text-hud-text"
+        onChange={onEndChange}
+        storageFormat="filter"
+        className="h-5 w-full"
       />
       <div className="grid grid-cols-1 gap-0.5">{paramPills}</div>
       <HudButton
@@ -244,7 +246,11 @@ function HistoryCurveBody({
         onClick={onQuery}
         disabled={loading || selected.length === 0}
       >
-        {loading ? '…' : '查询'}
+        {loading ? (
+          <Loader2 className="mx-auto h-3 w-3 animate-spin" aria-hidden />
+        ) : (
+          '查询'
+        )}
       </HudButton>
       {showResultsButton && onShowResults && (
         <HudButton className="w-full" onClick={onShowResults}>

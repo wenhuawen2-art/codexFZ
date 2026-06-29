@@ -6,6 +6,7 @@ import HistoryCurveBody from './history/HistoryCurveBody'
 import HistoryCurveChartPanel from './history/HistoryCurveChartPanel'
 import type { HistoryPoint } from '../types/dashboard'
 import { formatHistoryCsvValue } from '../constants/historyParams'
+import { downloadCsv, escapeCsvCell } from '../lib/csv'
 import { getDisplayParams } from './viewport/historyChartUtils'
 
 interface HistoryCurvePanelProps {
@@ -20,20 +21,14 @@ interface HistoryCurvePanelProps {
 function exportCsv(data: HistoryPoint[], params: string[]) {
   const headers = ['time', ...params]
   const rows = data.map((row) =>
-    headers.map((h) => formatHistoryCsvValue(h, row)).join(','),
+    headers.map((h) => escapeCsvCell(formatHistoryCsvValue(h, row))),
   )
-  const blob = new Blob([[headers.join(','), ...rows].join('\n')], { type: 'text/csv' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `history_${dayjs().format('YYYYMMDDHHmmss')}.csv`
-  a.click()
-  URL.revokeObjectURL(url)
+  downloadCsv(headers, rows, 'history')
 }
 
 function HistoryCurvePanel({ onQuery, className }: HistoryCurvePanelProps) {
-  const [start, setStart] = useState(dayjs().subtract(2, 'hour').format('YYYY-MM-DDTHH:mm'))
-  const [end, setEnd] = useState(dayjs().format('YYYY-MM-DDTHH:mm'))
+  const [start, setStart] = useState(dayjs().subtract(2, 'hour').format('YYYY-MM-DDTHH:mm:ss'))
+  const [end, setEnd] = useState(dayjs().format('YYYY-MM-DDTHH:mm:ss'))
   const [selected, setSelected] = useState<string[]>(['wavelengthNm', 'prfHz'])
   const [queriedParams, setQueriedParams] = useState<string[]>([])
   const [data, setData] = useState<HistoryPoint[]>([])

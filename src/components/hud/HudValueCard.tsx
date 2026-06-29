@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { Pencil } from 'lucide-react'
 import HudSubCard from './HudSubCard'
 
 interface HudValueCardProps {
@@ -42,7 +43,7 @@ function HudValueCard({
           title="编辑"
           aria-label={`编辑${label}`}
         >
-          ✎
+          <Pencil className="h-2.5 w-2.5" strokeWidth={2} aria-hidden />
         </button>
       )}
       <p className="truncate text-2xs uppercase leading-tight tracking-wider text-hud-muted">{label}</p>

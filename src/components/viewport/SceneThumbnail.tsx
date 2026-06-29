@@ -14,7 +14,7 @@ function SceneThumbnail({ scene, active, onClick }: SceneThumbnailProps) {
       type="button"
       onClick={onClick}
       className={clsx(
-        'hud-thumbnail flex h-[378px] w-[672px] shrink-0 flex-col items-center justify-center p-1 transition-colors',
+        'hud-thumbnail flex aspect-[672/378] w-full min-w-0 max-w-[672px] flex-1 flex-col items-center justify-center p-1 transition-colors',
         active && 'border-hud-viewport bg-hud-card/40',
       )}
     >

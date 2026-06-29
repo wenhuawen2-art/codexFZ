@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import HudButton from '../hud/HudButton'
 import HudDataRow from '../hud/HudDataRow'
+import HudDateTimePicker from '../controls/HudDateTimePicker'
 import { formatBeijingClock, formatUtcClock } from '../../lib/time'
 import type { SunEarthSettings, SunEarthSite } from '../../types/dashboard'
 
@@ -92,11 +93,11 @@ function Scene2InteractivePanel({
             跟随真实时间
           </label>
           {!settings.useLiveTime && (
-            <input
-              type="datetime-local"
+            <HudDateTimePicker
               value={settings.simTime}
-              onChange={(e) => onChange({ simTime: e.target.value })}
-              className="hud-input w-full px-1 py-0.5 text-2xs"
+              onChange={(simTime) => onChange({ simTime })}
+              storageFormat="filter"
+              className="w-full"
             />
           )}
           <div className="mt-1 space-y-0.5">

@@ -39,8 +39,22 @@ export function computeUeLeftPanelSize(
     }
   }
 
+  let finalWidth = Math.max(0, Math.floor(width))
+  let finalHeight = Math.max(0, Math.floor(height))
+
+  // floor 可能导致总高度略超 availableHeight，再 clamp 一次
+  const flooredTotal = finalHeight * panelCount + totalGap
+  if (flooredTotal > availableHeight && panelCount > 0) {
+    finalHeight = Math.max(0, Math.floor((availableHeight - totalGap) / panelCount))
+    finalWidth = Math.max(0, Math.floor(finalHeight * UE_LEFT_PANEL_ASPECT))
+    if (finalWidth > availableWidth) {
+      finalWidth = Math.max(0, Math.floor(availableWidth))
+      finalHeight = Math.max(0, Math.floor(finalWidth / UE_LEFT_PANEL_ASPECT))
+    }
+  }
+
   return {
-    width: Math.max(0, Math.floor(width)),
-    height: Math.max(0, Math.floor(height)),
+    width: finalWidth,
+    height: finalHeight,
   }
 }

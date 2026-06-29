@@ -2,6 +2,8 @@ import 'core-js/stable'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import 'react-datepicker/dist/react-datepicker.css'
+import './styles/datepicker-hud.css'
 import './index.css'
 import { setupAutofit, teardownAutofit } from './lib/autofit'
 

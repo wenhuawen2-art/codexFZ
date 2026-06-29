@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useRequest } from 'ahooks'
 import dayjs from 'dayjs'
+import { DEVICE_SECTION } from '../constants/deviceNames'
 import {
   executeControl,
   fetchHistoryCurve,
@@ -10,6 +11,11 @@ import {
 } from '../services/dashboardService'
 import { syncDeviceState, syncMagneticSettings, syncMagneticView, syncRadarView, syncScene, syncSunEarthSettings, syncSunEarthView } from '../lib/ueBridge'
 import { useDashboardDispatch, useDashboardState } from '../store/dashboardStore'
+import {
+  formatParamLogValue,
+  getParamLogMeta,
+  isSystemParamKey,
+} from '../constants/paramLogMeta'
 import type {
   ControlCommand,
   HistoryQuery,
@@ -100,10 +106,22 @@ export function useDashboard() {
           newValue,
           risk,
           onConfirm: async () => {
-            const { controls, log } = await executeControl(cmd, state)
-            dispatch({ type: 'SET_CONTROLS', payload: controls })
+            const pending = state.pendingControl!
+            const { controls, log } = await executeControl(cmd, state, {
+              oldValue: pending.oldValue,
+              newValue: pending.newValue,
+              content: `${cmd.deviceName} ${pending.newValue}`,
+            })
+            if (log.result === 'success') {
+              dispatch({ type: 'SET_CONTROLS', payload: controls })
+              if (cmd.deviceName === DEVICE_SECTION.skylight && cmd.field === 'skylightStatus') {
+                const skylightStatus = cmd.value as SystemParams['skylightStatus']
+                patchParams({ skylightStatus })
+                dispatch({ type: 'PATCH_PARAMS', payload: { skylightStatus } })
+              }
+              syncDeviceState(controls)
+            }
             dispatch({ type: 'ADD_LOG', payload: log })
-            syncDeviceState(controls)
             dispatch({ type: 'SET_PENDING_CONTROL', payload: null })
           },
         },
@@ -122,24 +140,37 @@ export function useDashboard() {
 
   const updateParams = useCallback(
     (params: Partial<SystemParams>) => {
+      const prev = state.realtime.params
       patchParams(params)
       dispatch({ type: 'PATCH_PARAMS', payload: params })
-      dispatch({
-        type: 'ADD_LOG',
-        payload: {
-          id: crypto.randomUUID(),
-          timestamp: dayjs().toISOString(),
-          user: 'operator',
-          deviceName: '系统参数',
-          eventType: 'param',
-          content: '参数修改',
-          oldValue: '',
-          newValue: JSON.stringify(params),
-          result: 'success',
-        },
-      })
+
+      for (const key of Object.keys(params)) {
+        if (!isSystemParamKey(key)) continue
+        const meta = getParamLogMeta(key)
+        if (!meta) continue
+        const oldVal = prev[key]
+        const newVal = params[key]
+        if (newVal === undefined) continue
+
+        dispatch({
+          type: 'ADD_LOG',
+          payload: {
+            id: crypto.randomUUID(),
+            timestamp: dayjs().toISOString(),
+            user: 'operator',
+            deviceName: '系统参数',
+            eventType: 'param',
+            paramName: meta.paramName,
+            unit: meta.unit || undefined,
+            content: `${meta.paramName}修改`,
+            oldValue: formatParamLogValue(key, oldVal),
+            newValue: formatParamLogValue(key, newVal),
+            result: 'success',
+          },
+        })
+      }
     },
-    [dispatch],
+    [dispatch, state.realtime.params],
   )
 
   const refreshNoise = useCallback(() => {

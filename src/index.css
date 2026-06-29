@@ -69,7 +69,12 @@
   }
 
   .hud-btn {
-    @apply h-4 border border-hud-border/40 px-1.5 text-2xs uppercase tracking-wider text-hud-text transition-colors hover:border-hud-viewport;
+    @apply h-4 border border-hud-border/40 px-1.5 text-2xs uppercase tracking-wider text-hud-text transition-colors hover:border-hud-secondary;
+  }
+
+  /** 与 hud-pill-selected 一致：历史曲线参数 / 页面切换选中 */
+  .hud-btn-selected {
+    @apply border-hud-border text-hud-accent;
   }
 
   .hud-thumbnail {
@@ -162,5 +167,28 @@
 
   .hud-indicator-off {
     @apply h-1.5 w-1.5 border border-hud-tag bg-transparent;
+  }
+
+  /** 选中态与 hud-pill-selected（历史曲线参数）一致 */
+  .hud-checkbox {
+    @apply relative h-3.5 w-3.5 shrink-0 cursor-pointer appearance-none border border-hud-border/30 bg-hud-card transition-colors;
+  }
+
+  .hud-checkbox:hover {
+    @apply border-hud-secondary;
+  }
+
+  .hud-checkbox:checked {
+    @apply border-hud-border bg-hud-card;
+  }
+
+  .hud-checkbox:checked::after {
+    content: '';
+    @apply absolute left-[4px] top-[1px] block h-[9px] w-[5px] border-b-2 border-r-2 border-hud-accent;
+    transform: rotate(45deg);
+  }
+
+  .hud-checkbox:disabled {
+    @apply cursor-not-allowed opacity-40;
   }
 }

@@ -119,7 +119,7 @@ function LeftDashboard({
         title="编辑采样时间"
         label="采样时间"
         value={params.samplingTime}
-        inputType="text"
+        inputType="datetime"
         onConfirm={handleConfirmEdit}
         onCancel={() => setEditField(null)}
       />

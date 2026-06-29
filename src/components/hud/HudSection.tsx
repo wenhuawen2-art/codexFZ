@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 interface HudSectionProps {
@@ -17,7 +18,11 @@ function HudSection({ title, expanded, onToggle, summary, children }: HudSection
         onClick={onToggle}
         className="flex w-full items-center gap-1 py-0.5 text-left"
       >
-        <span className="text-2xs text-hud-viewport">{expanded ? '▼' : '▶'}</span>
+        {expanded ? (
+          <ChevronDown className="h-3 w-3 shrink-0 text-hud-viewport" aria-hidden />
+        ) : (
+          <ChevronRight className="h-3 w-3 shrink-0 text-hud-viewport" aria-hidden />
+        )}
         <span className="flex-1 truncate text-2xs font-bold uppercase tracking-wider text-hud-text">
           {title}
         </span>

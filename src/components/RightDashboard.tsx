@@ -11,6 +11,7 @@ import {
   TELESCOPE_MODE_LABELS,
   canControl,
 } from '../constants/labels'
+import { DEVICE_SECTION } from '../constants/deviceNames'
 import type {
   AcquisitionMode,
   DeviceControls,
@@ -26,7 +27,11 @@ interface RightDashboardProps {
   controls: DeviceControls
   connections: DataConnectionItem[]
   userRole: UserRole
-  onLaserChange: (id: number, field: 'amplifier' | 'oscillator' | 'qSwitch', value: TriState) => void
+  onLaserChange: (
+    id: number,
+    field: 'amplifier' | 'oscillator' | 'qSwitch',
+    value: TriState,
+  ) => void
   onSeedLaserChange: (v: SeedLaserMode) => void
   onTelescopeChange: (id: number, mode: TelescopeMode) => void
   onSnspdChange: (v: SnspdMode) => void
@@ -69,11 +74,11 @@ function RightDashboard({
 
   return (
     <aside className="flex h-full w-[226px] shrink-0 flex-col overflow-hidden bg-hud-bg p-2">
-      <div className="hud-rail-stack-l1 hud-rail-stack-right flex min-h-0 flex-1 flex-col overflow-hidden">
-        <HudPanel title="设备控制" className="flex min-h-0 flex-[3] flex-col overflow-hidden">
-          <div className="hud-rail-stack-l2 hud-rail-stack-right min-h-0 flex-1 overflow-hidden">
+      <div className="hud-rail-stack-l1 hud-rail-stack-right flex min-h-0 flex-1 flex-col">
+        <HudPanel title="设备控制" className="flex min-h-0 flex-[3] flex-col">
+          <div className="hud-rail-stack-l2 hud-rail-stack-right min-h-0 flex-1">
             <section>
-              <p className="hud-device-title">激光器</p>
+              <p className="hud-device-title">{DEVICE_SECTION.laser}</p>
               <LaserControlGrid
                 lasers={controls.lasers}
                 disabled={disabled}
@@ -82,7 +87,7 @@ function RightDashboard({
             </section>
 
             <section>
-              <p className="hud-device-title">种子激光</p>
+              <p className="hud-device-title">{DEVICE_SECTION.seedLaser}</p>
               <ModeSelect
                 options={seedOptions}
                 value={controls.seedLaser}
@@ -94,7 +99,7 @@ function RightDashboard({
             </section>
 
             <section>
-              <p className="hud-device-title">望远镜</p>
+              <p className="hud-device-title">{DEVICE_SECTION.telescope}</p>
               <div className="hud-rail-stack-l2 hud-rail-stack-right">
                 {controls.telescopes.map((t) => (
                   <div key={t.id}>
@@ -113,7 +118,7 @@ function RightDashboard({
             </section>
 
             <section>
-              <p className="hud-device-title">SNSPD</p>
+              <p className="hud-device-title">{DEVICE_SECTION.snspd}</p>
               <ModeSelect
                 options={snspdOptions}
                 value={controls.snspd}
@@ -125,7 +130,8 @@ function RightDashboard({
             </section>
 
             <section>
-              <p className="hud-device-title">TCSPC</p>
+              <p className="hud-device-title">{DEVICE_SECTION.tcspc}</p>
+
               {controls.tcspc === 'disconnected' ? (
                 <HudBadge label="无法连接" variant="offline" />
               ) : (
@@ -143,7 +149,7 @@ function RightDashboard({
             </section>
 
             <section>
-              <p className="hud-device-title">数据采集</p>
+              <p className="hud-device-title">{DEVICE_SECTION.acquisition}</p>
               <ModeSelect
                 options={acqOptions}
                 value={controls.acquisition}
@@ -155,7 +161,10 @@ function RightDashboard({
           </div>
         </HudPanel>
 
-        <HudPanel title="数据接入" className="flex min-h-0 flex-[2] flex-col overflow-hidden">
+        <HudPanel
+          title="数据接入"
+          className="flex min-h-0 flex-[2] flex-col overflow-hidden"
+        >
           <div className="min-h-0 flex-1 overflow-hidden">
             <ConnectionList connections={connections} />
           </div>

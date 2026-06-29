@@ -16,8 +16,11 @@
     "autofit.js": "^3.2.8",
     "axios": "^1.9.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
     "dayjs": "^1.11.13",
+    "lucide-react": "^1.21.0",
     "react": "^19.1.0",
+    "react-datepicker": "^9.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0",
     "recharts": "^2.15.0"

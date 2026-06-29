@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import HudButton from '../hud/HudButton'
 import HudInput from '../hud/HudInput'
+import HudDateTimePicker from './HudDateTimePicker'
 
 interface ParamEditDialogProps {
   open: boolean
   title: string
   label: string
   value: string
-  inputType?: 'text' | 'number' | 'datetime-local'
+  inputType?: 'text' | 'number' | 'datetime'
   step?: string
   unit?: string
   onConfirm: (value: string) => void
@@ -42,13 +43,22 @@ function ParamEditDialog({
         <div className="mt-2 space-y-1">
           <p className="text-2xs text-hud-muted">{label}</p>
           <div className="flex items-center gap-1">
-            <HudInput
-              type={inputType}
-              step={step}
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              className="flex-1"
-            />
+            {inputType === 'datetime' ? (
+              <HudDateTimePicker
+                value={draft}
+                onChange={setDraft}
+                storageFormat="param"
+                className="flex-1"
+              />
+            ) : (
+              <HudInput
+                type={inputType}
+                step={step}
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                className="flex-1"
+              />
+            )}
             {unit && <span className="text-2xs text-hud-muted">{unit}</span>}
           </div>
         </div>

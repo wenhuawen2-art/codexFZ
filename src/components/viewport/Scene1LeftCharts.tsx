@@ -7,6 +7,7 @@ import {
   UE_LEFT_PANEL_GAP,
   UE_LEFT_PANEL_INSET,
 } from '../../constants/ueLeftPanelLayout'
+import { measureDesignSize } from '../../lib/autofit'
 import type { ConnectionStatus, RadarView, SceneChartData } from '../../types/dashboard'
 
 interface Scene1LeftChartsProps {
@@ -44,7 +45,7 @@ function Scene1LeftCharts({
     if (!el) return
 
     const update = () => {
-      const { width, height } = el.getBoundingClientRect()
+      const { width, height } = measureDesignSize(el)
       const availableWidth = width - UE_LEFT_PANEL_INSET.left - UE_LEFT_PANEL_INSET.right
       const availableHeight = height - UE_LEFT_PANEL_INSET.top - UE_LEFT_PANEL_INSET.bottom
       setPanelSize(computeUeLeftPanelSize(availableWidth, availableHeight, panelCount, UE_LEFT_PANEL_GAP))
@@ -53,7 +54,11 @@ function Scene1LeftCharts({
     update()
     const ro = new ResizeObserver(update)
     ro.observe(el)
-    return () => ro.disconnect()
+    window.addEventListener('resize', update)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', update)
+    }
   }, [panelCount])
 
   const stackStyle = useMemo(
@@ -71,7 +76,7 @@ function Scene1LeftCharts({
     <div ref={measureRef} className="pointer-events-none absolute inset-0">
       <UeLeftPanelProvider value={panelSize}>
         <div
-          className="pointer-events-none absolute flex flex-col"
+          className="pointer-events-none absolute flex min-h-0 flex-col overflow-hidden"
           style={stackStyle}
         >
           {radarView === 'snspd' ? (

@@ -13,7 +13,7 @@ function PageNav() {
           className={({ isActive }) =>
             clsx(
               'hud-btn flex h-auto min-h-[18px] items-center justify-center px-0.5 py-0.5 text-center leading-tight',
-              isActive && 'border-hud-accent text-hud-accent',
+              isActive && 'hud-btn-selected',
             )
           }
         >

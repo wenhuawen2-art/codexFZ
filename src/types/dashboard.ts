@@ -134,16 +134,23 @@ export interface RealtimeData {
   localSunset: string
 }
 
+export type OperationEventType = 'power' | 'param' | 'control' | 'user'
+
 export interface OperationLog {
   id: string
   timestamp: string
   user: string
   deviceName: string
-  eventType: 'control' | 'param'
+  eventType: OperationEventType
   content: string
   oldValue: string
   newValue: string
   result: 'success' | 'failure'
+  paramName?: string
+  unit?: string
+  failureReason?: string
+  clientIp?: string
+  terminal?: string
 }
 
 export interface HistoryPoint {
@@ -203,4 +210,10 @@ export interface ControlCommand {
   deviceName: string
   field: string
   value: string
+}
+
+export interface ControlLogDisplay {
+  oldValue: string
+  newValue: string
+  content: string
 }
