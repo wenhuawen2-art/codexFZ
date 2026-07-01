@@ -60,6 +60,7 @@ function EquipmentRoomViewport({
     <UeFrame
       placeholderHidden={placeholderHidden}
       onTogglePlaceholder={() => setPlaceholderHidden((h) => !h)}
+      gridClassName="hud-ue-coordinate-grid"
       bottomSlot={
         <DaylightTimeline
           hour={hour}

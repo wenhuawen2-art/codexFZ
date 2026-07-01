@@ -38,7 +38,7 @@ function ToggleCell({
       disabled={disabled}
       onClick={onToggle}
       className={clsx(
-        'hud-pill w-full min-w-0 px-0.5',
+        'hud-pill w-full min-w-0 rounded-[4px] px-0.5',
         value === 'on' && 'hud-pill-selected',
       )}
     >

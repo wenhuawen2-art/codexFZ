@@ -42,13 +42,10 @@ function LogTable({
 }: LogTableProps) {
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <div className="mb-1 flex items-center justify-between">
+      <div className="mb-1 flex items-center">
         <button type="button" className="text-2xs text-hud-muted hover:text-hud-active" onClick={onToggleSort}>
           时间 {sortDesc ? '↓' : '↑'}
         </button>
-        <span className="text-[10px] text-hud-muted">
-          第 {page} / {totalPages} 页
-        </span>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
         <table className="w-full border-collapse text-2xs">
@@ -179,7 +176,10 @@ function LogTable({
           </tbody>
         </table>
       </div>
-      <div className="mt-1 flex shrink-0 justify-end gap-1">
+      <div className="mt-1 flex shrink-0 items-center justify-end gap-1">
+        <span className="whitespace-nowrap text-[10px] text-hud-muted">
+          第 {page} / {totalPages} 页
+        </span>
         <button
           type="button"
           className="hud-btn text-2xs"

@@ -11,7 +11,7 @@ const views: MagneticView[] = ['field', 'section']
 
 function MagneticViewTabs({ value, onChange }: MagneticViewTabsProps) {
   return (
-    <div className="pointer-events-auto absolute right-[64px] top-[38px] z-20 flex gap-8">
+    <div className="pointer-events-auto absolute right-[64px] top-[38px] z-20 flex gap-4">
       {views.map((v) => (
         <button
           key={v}

@@ -38,7 +38,7 @@ function ModeSelect<T extends string>({
           disabled={disabled}
           onClick={() => onChange(opt.value)}
           className={clsx(
-            'hud-pill',
+            'hud-pill rounded-[4px]',
             compact && 'min-w-0 flex-1 truncate px-0.5',
             value === opt.value && 'hud-pill-selected',
           )}

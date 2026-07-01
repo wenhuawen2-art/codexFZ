@@ -11,7 +11,7 @@ const views: RadarView[] = ['top', 'isometric', 'snspd']
 
 function RadarViewTabs({ value, onChange }: RadarViewTabsProps) {
   return (
-    <div className="pointer-events-auto absolute right-[64px] top-[38px] z-20 flex gap-8">
+    <div className="pointer-events-auto absolute right-[64px] top-[38px] z-20 flex gap-4">
       {views.map((v, index) => (
         <button
           key={v}

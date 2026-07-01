@@ -48,7 +48,7 @@ function LeftDashboard({
 
   return (
     <>
-      <HudPanel title="天气 / 环境">
+      <HudPanel title="天气 / 环境" titleDivider>
         {weather.error ? (
           <p className="text-2xs text-hud-alert">天气数据获取失败</p>
         ) : (
@@ -68,7 +68,7 @@ function LeftDashboard({
         )}
       </HudPanel>
 
-      <HudPanel title="系统参数">
+      <HudPanel title="系统参数" titleDivider>
         <div className="grid grid-cols-2 gap-1.5">
           <HudValueCard
             className="col-span-2"

@@ -41,6 +41,7 @@ function UeViewport() {
       placeholderHidden={placeholderHidden}
       onTogglePlaceholder={() => setPlaceholderHidden((hidden) => !hidden)}
       portalId="history-chart-portal"
+      gridClassName="hud-ue-coordinate-grid"
       bottomSlot={
         <div
           className={clsx(

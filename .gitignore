@@ -32,3 +32,5 @@ node_modules/.tmp
 
 # dev
 opt
+tmp/
+design-qa.md

@@ -93,7 +93,7 @@ function HistoryCurveBody({
         title={`${p.pillLabel}：${actionLabel} · ${statusLabel}`}
         onClick={() => onToggleParam(p.key)}
         className={clsx(
-          'hud-pill flex w-full items-center gap-1.5 py-0.5 pl-1 pr-1 min-h-[22px]',
+          'hud-pill flex min-h-[22px] w-full items-center gap-1.5 rounded-[4px] py-0.5 pl-1 pr-1',
           isSelected && 'hud-pill-selected',
         )}
       >
@@ -231,18 +231,18 @@ function HistoryCurveBody({
         value={start}
         onChange={onStartChange}
         storageFormat="filter"
-        className="h-5 w-full"
+        className="h-5 w-full rounded-[4px]"
       />
       <HudDateTimePicker
         value={end}
         onChange={onEndChange}
         storageFormat="filter"
-        className="h-5 w-full"
+        className="h-5 w-full rounded-[4px]"
       />
       <div className="grid grid-cols-1 gap-0.5">{paramPills}</div>
       <HudButton
         variant="active"
-        className="w-full"
+        className="w-full rounded-[4px]"
         onClick={onQuery}
         disabled={loading || selected.length === 0}
       >
@@ -253,7 +253,7 @@ function HistoryCurveBody({
         )}
       </HudButton>
       {showResultsButton && onShowResults && (
-        <HudButton className="w-full" onClick={onShowResults}>
+        <HudButton className="w-full rounded-[4px]" onClick={onShowResults}>
           显示查询结果
         </HudButton>
       )}

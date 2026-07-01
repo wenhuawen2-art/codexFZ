@@ -16,6 +16,7 @@ interface UeFrameProps {
   onTogglePlaceholder?: () => void
   portalId?: string
   className?: string
+  gridClassName?: string
 }
 
 function UeFrame({
@@ -25,6 +26,7 @@ function UeFrame({
   onTogglePlaceholder,
   portalId,
   className,
+  gridClassName,
 }: UeFrameProps) {
   const placeholderHiddenClass = placeholderHidden ? 'invisible pointer-events-none' : undefined
 
@@ -93,6 +95,7 @@ function UeFrame({
         <div
           className={clsx(
             'pointer-events-none absolute inset-0 z-0 hud-ue-grid-bg',
+            gridClassName,
             placeholderHiddenClass,
           )}
           aria-hidden={placeholderHidden}

@@ -93,6 +93,20 @@
     background-size: 40px 40px;
   }
 
+  /** 主场景经纬网：7 × 5 白色虚线，交点为实线十字 */
+  .hud-ue-coordinate-grid {
+    @apply overflow-hidden;
+  }
+
+  .hud-ue-coordinate-grid::after {
+    content: '';
+    @apply absolute;
+    inset: -10% -7.142857%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cpath d='M0 90H180M90 0V180' fill='none' stroke='white' stroke-opacity='.52' stroke-width='1.5' stroke-dasharray='4 6'/%3E%3Cpath d='M82.5 90H97.5M90 82.5V97.5' fill='none' stroke='white' stroke-opacity='.92' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 12.5% 16.666667%;
+  }
+
   .hud-modal-backdrop {
     @apply fixed inset-0 z-50 flex items-center justify-center bg-black/70;
   }

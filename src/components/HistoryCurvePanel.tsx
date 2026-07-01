@@ -73,7 +73,11 @@ function HistoryCurvePanel({ onQuery, className }: HistoryCurvePanelProps) {
 
   return (
     <>
-      <HudPanel title="历史曲线" className={clsx('flex shrink-0 flex-col', className)}>
+      <HudPanel
+        title="历史曲线"
+        titleDivider
+        className={clsx('flex shrink-0 flex-col', className)}
+      >
         <HistoryCurveBody
           variant="sidebar"
           onQuery={handleQuery}

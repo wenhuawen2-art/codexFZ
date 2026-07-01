@@ -3,7 +3,7 @@
 /** 设计参考尺寸 320×240，用于宽高比 */
 export const UE_LEFT_PANEL_ASPECT = 320 / 240
 
-export const UE_LEFT_PANEL_INSET = { top: 70, right: 70, bottom: 70, left: 70 } as const
+export const UE_LEFT_PANEL_INSET = { top: 70, right: 70, bottom: 70, left: 44 } as const
 
 export const UE_LEFT_PANEL_GAP = 16
 

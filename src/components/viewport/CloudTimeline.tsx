@@ -18,23 +18,20 @@ function CloudTimeline() {
   const frameProgress = frame / (totalFrames - 1)
 
   return (
-    <HudPanel title="卫星云图">
+    <HudPanel title="卫星云图" titleDivider>
       <div className="relative aspect-video w-full overflow-hidden border border-dashed border-hud-viewport/60 bg-hud-card/40">
-        <div
-          className="absolute inset-0 transition-opacity duration-300"
+        <img
+          src={`${import.meta.env.BASE_URL}images/satellite-cloud-map.png`}
+          alt="东亚区域卫星云图"
+          className="absolute inset-0 h-full w-full object-cover transition duration-300"
           style={{
-            opacity: playing ? 1 : 0.35,
-            background: `linear-gradient(135deg, 
-              rgba(38,85,111,0.9) 0%, 
-              rgba(107,211,237,${0.2 + frameProgress * 0.4}) 45%, 
-              rgba(17,233,157,${0.1 + frameProgress * 0.2}) 100%)`,
+            opacity: playing ? 1 : 0.82,
+            filter: `brightness(${0.9 + frameProgress * 0.12}) contrast(1.08)`,
+            transform: `scale(1.03) translateX(${(frameProgress - 0.5) * 1.5}%)`,
           }}
         />
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xs text-hud-muted">卫星云图</span>
-          <span className="text-2xs text-hud-tag">
-            {playing ? `帧 ${frame + 1}/${totalFrames}` : '图像占位 · 模拟数据'}
-          </span>
+        <div className="pointer-events-none absolute bottom-1 right-1 border border-hud-viewport/40 bg-hud-card/80 px-1 py-0.5 text-2xs text-hud-text backdrop-blur-sm">
+          {playing ? `帧 ${frame + 1}/${totalFrames}` : '卫星云图'}
         </div>
         <span className="pointer-events-none absolute left-1 top-1 h-1 w-1 bg-hud-viewport" />
       </div>

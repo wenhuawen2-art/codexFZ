@@ -75,7 +75,7 @@ function RightDashboard({
   return (
     <aside className="flex h-full w-[226px] shrink-0 flex-col overflow-hidden bg-hud-bg p-2">
       <div className="hud-rail-stack-l1 hud-rail-stack-right flex min-h-0 flex-1 flex-col">
-        <HudPanel title="设备控制" className="flex min-h-0 flex-[3] flex-col">
+        <HudPanel title="设备控制" titleDivider className="flex min-h-0 flex-[3] flex-col">
           <div className="hud-rail-stack-l2 hud-rail-stack-right min-h-0 flex-1">
             <section>
               <p className="hud-device-title">{DEVICE_SECTION.laser}</p>
@@ -163,6 +163,7 @@ function RightDashboard({
 
         <HudPanel
           title="数据接入"
+          titleDivider
           className="flex min-h-0 flex-[2] flex-col overflow-hidden"
         >
           <div className="min-h-0 flex-1 overflow-hidden">

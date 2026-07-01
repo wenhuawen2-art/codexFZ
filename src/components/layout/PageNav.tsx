@@ -12,7 +12,7 @@ function PageNav() {
           end={path === '/'}
           className={({ isActive }) =>
             clsx(
-              'hud-btn flex h-auto min-h-[18px] items-center justify-center px-0.5 py-0.5 text-center leading-tight',
+              'hud-btn flex h-auto min-h-[18px] items-center justify-center rounded-[4px] px-0.5 py-0.5 text-center leading-tight',
               isActive && 'hud-btn-selected',
             )
           }

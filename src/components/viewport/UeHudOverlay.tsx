@@ -66,6 +66,12 @@ function UeHudOverlay({
     <div className="pointer-events-none absolute inset-0 z-10">
       {mainScene === 'radar' && (
         <>
+          <img
+            src={`${import.meta.env.BASE_URL}images/laser-radar-equipment.png`}
+            alt=""
+            className="pointer-events-none absolute left-1/2 top-1/2 z-0 h-[78%] w-[45%] -translate-x-1/2 -translate-y-1/2 object-contain opacity-80"
+            aria-hidden
+          />
           <RadarViewTabs value={radarView} onChange={onRadarViewChange} />
           <Scene1LeftCharts
             charts={charts}
